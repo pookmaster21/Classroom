@@ -8,7 +8,7 @@ public class pageex2 {
         System.out.println((int) Math.sqrt(second));
         System.out.println((int) Math.sqrt(third));
         if (Math.sqrt(first) == Math.sqrt(second) || Math.sqrt(first) == Math.sqrt(third) || Math.sqrt(second) == Math.sqrt(third)) {
-            System.out.println("There are to numbers that have the same sqrt");
+            System.out.println("There are two numbers that have the same sqrt");
         }
     }
 }
