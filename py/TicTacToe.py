@@ -1,3 +1,8 @@
+"""
+author: Lavi Jacob Landa
+date: 12/15/2021
+explain: The program is a tic tac toe game!
+"""
 import os
 
 
