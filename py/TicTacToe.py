@@ -27,8 +27,9 @@ def convert(entered):
 
 
 def is_convertible(entered):
-    if len(entered) == 2 and (entered[0] == "a" or entered[0] == "b" or entered[0] == "c")\
-            and (entered[1] == "1" or entered[1] == "2" or entered[1] == "3"):
+    if len(entered) == 2 and\
+            (entered[0] == "a" or entered[0] == "b"or entered[0] == "c")\
+            and(entered[1] == "1" or entered[1] == "2" or entered[1] == "3"):
         return True
     return False
 
