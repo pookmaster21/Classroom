@@ -7,19 +7,22 @@ import os
 
 
 def convert(entered):
-    if entered[0] == "a":
-        row = 1
-    elif entered[0] == "b":
-        row = 2
-    elif entered[0] == "c":
-        row = 3
+    if len(entered) != 2:
+        row, col = -1, -1
     else:
-        row = -1
+        if entered[0] == "a":
+            row = 1
+        elif entered[0] == "b":
+            row = 2
+        elif entered[0] == "c":
+            row = 3
+        else:
+            row = -1
 
-    if entered[1] == "1" or entered[1] == "2" or entered[1] == "3":
-        col = int(entered[1])
-    else:
-        col = -1
+        if entered[1] == "1" or entered[1] == "2" or entered[1] == "3":
+            col = int(entered[1])
+        else:
+            col = -1
     return row, col
 
 
@@ -139,15 +142,15 @@ def start():
         # taking the spot
         board[row - 1][col - 1] = player
 
+        # checking whether the game is draw or not
+        if is_board_filled(board):
+            print("Match Draw!")
+            break
+
         # checking whether current player is won or not
         if is_player_win(board, player):
             os.system('cls' if os.name == 'nt' else 'clear')
             print(f"Player {player} wins the game!")
-            break
-
-        # checking whether the game is draw or not
-        if is_board_filled(board):
-            print("Match Draw!")
             break
 
         # swapping the turn
