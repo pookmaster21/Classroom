@@ -14,7 +14,7 @@ public class page193ex21 {
     public static void main(String[] args) {
         for (int worker=1;worker<=100;worker++) {
             System.out.printf("Enter accses code for worker number %s:", worker);
-            String number = reader.next();
+            String number = reader.nextLine();
             System.out.printf("The new accese code is %s\n", change(change(number)));
         }
     }
