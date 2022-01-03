@@ -24,7 +24,7 @@ def swap_players():
 def checkifwon(player):
     winner = False
 
-    # checking rows
+    # checking rows and colums
     for i in range(3):
         if b_list[i][0]["text"] == player and\
                 b_list[i][1]["text"] == player and\
@@ -32,40 +32,31 @@ def checkifwon(player):
             for g in range(3):
                 b_list[i][g].config(bg="red")
             winner = True
-            messagebox.showinfo("Tic Tac Toe",
-                                f"CONGRATULATIONS! {player} Wins!!")
-            disable_all_buttons()
-
-    # checking columns
-    for i in range(3):
         if b_list[0][i]["text"] == player and\
                 b_list[1][i]["text"] == player and\
                 b_list[2][i]["text"] == player:
             for g in range(3):
                 b_list[g][i].config(bg="red")
             winner = True
-            messagebox.showinfo("Tic Tac Toe",
-                                f"CONGRATULATIONS! {player} Wins!!")
-            disable_all_buttons()
 
     # checking diagonals
-    if not(winner):
-        if b_list[0][0]["text"] == player and\
-                b_list[1][1]["text"] == player and\
-                b_list[2][2]["text"] == player:
-            b_list[0][0].config(bg="red")
-            b_list[2][2].config(bg="red")
-            winner = True
-        elif b_list[0][2]["text"] == player and\
-                b_list[1][1]["text"] == player and\
-                b_list[2][0]["text"] == player:
-            b_list[0][2].config(bg="red")
-            b_list[2][0].config(bg="red")
-            winner = True
-        if winner:
-            b_list[1][1].config(bg="red")
-            messagebox.showinfo("Tic Tac Toe", f"CONGRATULATIONS! {player} Wins!!")
-            disable_all_buttons()
+    if b_list[0][0]["text"] == player and\
+            b_list[1][1]["text"] == player and\
+            b_list[2][2]["text"] == player:
+        b_list[0][0].config(bg="red")
+        b_list[2][2].config(bg="red")
+        b_list[1][1].config(bg="red")
+        winner = True
+    elif b_list[0][2]["text"] == player and\
+            b_list[1][1]["text"] == player and\
+            b_list[2][0]["text"] == player:
+        b_list[0][2].config(bg="red")
+        b_list[2][0].config(bg="red")
+        b_list[1][1].config(bg="red")
+        winner = True
+    if winner:
+        messagebox.showinfo("Tic Tac Toe", f"CONGRATULATIONS! {player} Wins!!")
+        disable_all_buttons()
 
     # Checking if it's a tie
     tie = True
