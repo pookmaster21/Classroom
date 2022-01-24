@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.Scanner;
 
 public class ClassWork_6_1 {
@@ -118,18 +117,6 @@ public class ClassWork_6_1 {
         }
         return new_word;
     }
-    public static void Ex12() {
-        String[] words = new String[20];
-        for (int i=0;i<20;i++) {
-            System.out.printf("Enter string number %s:", i+1);
-            words[i] = reader.next();
-        }
-        for(int i=0;i<20;i++) {
-            for(int g=0;g<20;g++) {
-
-            }
-        }
-    }
     public static void main(String[] args) {
         String word, word2;
         System.out.print("Which exercise do you want to test: ");
@@ -188,9 +175,6 @@ public class ClassWork_6_1 {
                     System.out.println("Enter another string");
                     word2 = reader.nextLine();
                     System.out.println(Ex11(word, word2));
-                    break;
-                case 12:
-                    Ex12();
                     break;
                 default:
                     System.out.print("Invalid input try again");

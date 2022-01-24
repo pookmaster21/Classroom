@@ -3,7 +3,6 @@ author: Lavi Jacob Landa
 date: 12/15/2021
 explain: The program is a tic tac toe game!
 """
-from hashlib import new
 from tkinter import *
 from tkinter import messagebox
 
@@ -20,46 +19,46 @@ def read_win_file():
         with open(r"TicTacToe.txt", "r") as file:
             lines = []
             count = 1
-            while(line := file.readline().rstrip()):
+            while line := file.readline().rstrip():
                 lines.append(line)
                 if count == 10:
                     break
-                count =+ 1
+                count = + 1
             return lines
     except FileNotFoundError:
         open(r"TicTacToe.txt", "w")
 
 
 # Check to see if someone won
-def checkifwon(player):
+def check_won(current_player):
     winner = False
 
-    # Checking rows and colums
+    # Checking rows and columns
     for i in range(3):
-        if b_list[i][0]["text"] == player and\
-                b_list[i][1]["text"] == player and\
-                b_list[i][2]["text"] == player:
+        if b_list[i][0]["text"] == current_player and \
+                b_list[i][1]["text"] == current_player and \
+                b_list[i][2]["text"] == current_player:
             for g in range(3):
                 b_list[i][g].config(bg="red")
             winner = True
-        if b_list[0][i]["text"] == player and\
-                b_list[1][i]["text"] == player and\
-                b_list[2][i]["text"] == player:
+        if b_list[0][i]["text"] == current_player and \
+                b_list[1][i]["text"] == current_player and \
+                b_list[2][i]["text"] == current_player:
             for g in range(3):
                 b_list[g][i].config(bg="red")
             winner = True
 
     # Checking diagonals
-    if b_list[0][0]["text"] == player and\
-            b_list[1][1]["text"] == player and\
-            b_list[2][2]["text"] == player:
+    if b_list[0][0]["text"] == current_player and \
+            b_list[1][1]["text"] == current_player and \
+            b_list[2][2]["text"] == current_player:
         b_list[0][0].config(bg="red")
         b_list[2][2].config(bg="red")
         b_list[1][1].config(bg="red")
         winner = True
-    elif b_list[0][2]["text"] == player and\
-            b_list[1][1]["text"] == player and\
-            b_list[2][0]["text"] == player:
+    elif b_list[0][2]["text"] == current_player and \
+            b_list[1][1]["text"] == current_player and \
+            b_list[2][0]["text"] == current_player:
         b_list[0][2].config(bg="red")
         b_list[2][0].config(bg="red")
         b_list[1][1].config(bg="red")
@@ -67,10 +66,11 @@ def checkifwon(player):
 
     # Win message
     if winner:
-        messagebox.showinfo("Tic Tac Toe", f"CONGRATULATIONS! {player} Wins!!")
+        messagebox.showinfo("Tic Tac Toe",
+                            f"CONGRATULATIONS! {current_player} Wins!!")
         disable_all_buttons()
         old_lines = read_win_file()
-        new_lines = [player + "\n"]
+        new_lines = [current_player + "\n"]
         if old_lines is not None:
             for i in range(len(old_lines)):
                 new_lines.append(old_lines[i] + "\n")
@@ -78,7 +78,7 @@ def checkifwon(player):
             file.writelines(new_lines)
 
     # Checking if it's a tie
-    if not(winner):
+    if not winner:
         tie = True
         for i in range(3):
             for g in range(3):
@@ -102,7 +102,7 @@ def b_click(b: Button):
 
     if b["text"] == " ":
         b.config(text=player)
-        checkifwon(player)
+        check_won(player)
         # Swapping players
         player = "X" if player == "O" else "O"
     else:
@@ -118,18 +118,18 @@ def rules():
     rules_win.grab_set()
     title = Label(rules_win, text="RULES FOR TIC-TAC-TOE.",
                   font=("Helvetica", 20))
-    rules = Label(rules_win,
-                  text="1. The game is played on a grid that's 3 squares by " +
-                       "3 squares.\n2. You are X, your friend or the compute" +
-                       "r is O.Players take turns putting their marks in emp" +
-                       "ty squares.\n3. The first player to get 3 of his mar" +
-                       "ks in a row (up, down, across, or diagonally) is the" +
-                       " winner.\n4. When all 9 squares are full, the game i" +
-                       "s over. If no player has 3 marks in a row, the game " +
-                       "ends in a tie.",
-                  font=("Helvetica", 20))
+    rules_lbl = Label(rules_win,
+                      text="1. The game is played on a grid that's 3 squares" +
+                           " by 3 squares.\n2. You are X, your friend or the" +
+                           " computer is O.Players take turns putting their " +
+                           "marks in empty squares.\n3. The first player to " +
+                           "get 3 of his marks in a row (up, down, across, o" +
+                           "r diagonally) is the winner.\n4. When all 9 squa" +
+                           "res are full, the game is over. If no player has" +
+                           " 3 marks in a row, the game ends in a tie.",
+                      font=("Helvetica", 20))
     title.grid(row=0, column=0)
-    rules.grid(row=1, column=0)
+    rules_lbl.grid(row=1, column=0)
 
 
 # Top Ten window
@@ -145,15 +145,16 @@ def top_ten():
             times = 10
         for i in range(times):
             if lines[i] == "Tie":
-                line = Label(top_ten_win, text=f"{i+1}. Tie",
+                line = Label(top_ten_win, text=f"{i + 1}. Tie",
                              font=("Helvetica", 20))
             else:
-                line = Label(top_ten_win, text=f"{i+1}. {lines[i]} won",
+                line = Label(top_ten_win, text=f"{i + 1}. {lines[i]} won",
                              font=("Helvetica", 20))
             line.pack()
     else:
         line = Label(top_ten_win, text="No Games Found",
                      font=("Helvetica", 20))
+        line.pack()
 
 
 # Restart the game over!
@@ -202,6 +203,9 @@ def reset_game():
 
 
 if __name__ == '__main__':
+    b_list = []
+    player = ""
+
     root = Tk()
     root.title('Menu')
 
