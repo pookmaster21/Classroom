@@ -87,6 +87,7 @@ public class ClassWork_6_1 {
                 count++;
             }
         }
+        System.out.println(count);
     }
     public static String Ex10(String word1, String word2) {
         String new_word = "";
