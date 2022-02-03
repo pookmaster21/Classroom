@@ -1,3 +1,4 @@
+import os
 import random
 
 
@@ -36,7 +37,21 @@ def get_player_input(colors: list) -> str:
         invalid = False
 
 
+def show_board(guessed: list, results: list) -> None:
+    os.system('cls' if os.name == 'nt' else 'clear')
+    output = "Guessed |       Results\n--------|----------------------\n"
+    for i in range(len(guessed)):
+        if i < len(results)//2:
+            output += guessed[i] + f"    |    " +\
+                      f"{results[i*2-1]} bulls and {results[i*2]} cows\n"
+        else:
+            output += guessed[i] + "\n"
+    print(output)
+
+
 def start() -> None:
+    guessed = []
+    results = []
     colors = (
         'r',
         'g',
@@ -48,23 +63,27 @@ def start() -> None:
     code = create_code(list(colors))
     place, color, winner = 0, 0, False
     for i in range(10):
-        entered = get_player_input(list(colors))
+        guessed.append(get_player_input(list(colors)))
         for h in range(4):
-            if entered[h] in code:
-                if entered[h] == code[h]:
+            if guessed[i][h] in code:
+                if guessed[i][h] == code[h]:
                     place = place + 1
                 else:
                     color = color + 1
         if place == 4:
+            winner = True
             break
         else:
-            print(f"You got {color} in the right color but not the right " +
-                  f"place, {place} in the the right color and right place")
+            results.append(place)
+            results.append(color)
+            show_board(guessed, results)
         place, color = 0, 0
+
     if winner:
-        print(f"You win!\nYou got it right in {i+1} moves")
+        print(f"    YOU WIN!\nYou got it right in {i+1} moves")
     else:
-        print("You didn't win, try next time!")
+        print("You didn't win, try next time!\nThe answer was " +
+              f"{code[0] + code[1] + code[2] + code[3]}")
 
 
 if __name__ == '__main__':
