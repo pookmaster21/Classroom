@@ -1,3 +1,8 @@
+"""
+author: Lavi Jacob Landa
+date: 3/1/2022
+explain: A simple Bulls and Cows game!
+"""
 import os
 import random
 
