@@ -44,13 +44,11 @@ def get_player_input(colors: list) -> str:
 
 def show_board(guessed: list, results: list) -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
-    output = "Guessed |       Results\n--------|----------------------\n"
+    output = ""
     for i in range(len(guessed)):
         if i < len(results)//2:
-            output += guessed[i] + f"    |    " +\
-                      f"{results[i*2-1]} bulls and {results[i*2]} cows\n"
-        else:
-            output += guessed[i] + "\n"
+            output += guessed[i] + "  -  " +\
+                      f"{results[i*2-1]} whites and {results[i*2]} blacks\n"
     print(output)
 
 

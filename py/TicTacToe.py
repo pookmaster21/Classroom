@@ -50,12 +50,10 @@ def enter(board):
 
 
 def is_player_win(board, player):
-    n = len(board)
-
     # checking rows
-    for i in range(n):
+    for i in range(3):
         win = True
-        for j in range(n):
+        for j in range(3):
             if board[i][j] != player:
                 win = False
                 break
@@ -63,9 +61,9 @@ def is_player_win(board, player):
             return win
 
     # checking columns
-    for i in range(n):
+    for i in range(3):
         win = True
-        for j in range(n):
+        for j in range(3):
             if board[j][i] != player:
                 win = False
                 break
@@ -74,7 +72,7 @@ def is_player_win(board, player):
 
     # checking diagonals
     win = True
-    for i in range(n):
+    for i in range(3):
         if board[i][i] != player:
             win = False
             break
@@ -82,8 +80,8 @@ def is_player_win(board, player):
         return win
 
     win = True
-    for i in range(n):
-        if board[i][n - 1 - i] != player:
+    for i in range(3):
+        if board[i][2 - i] != player:
             win = False
             break
     if win:
