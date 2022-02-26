@@ -60,6 +60,14 @@ def get_player_input(colors: list, input_box: Entry):
     return False
 
 
+def reset(entry: Entry):
+    """
+    A function that resets the game
+    """
+    start()
+    entry.delete(0, 'end')
+
+
 def start() -> None:
     """
     A function that starts the game.
@@ -101,13 +109,23 @@ def start() -> None:
             results[row].append(new_result)
 
     # Creating the input entry
-    input_box = Entry(root, text=" ", font=('Helvetica', 20))
-    input_box.grid(row=12, columnspan=2)
+    input_box = Entry(btn_frame, text=" ", font=('Helvetica', 20))
+    input_box.grid(row=0, columnspan=2)
 
     # Creating the confirm guess button
-    guess_btn = Button(root, text="Send guess", font=("Helvetica", 20),
+    guess_btn = Button(btn_frame, text="Send guess", font=("Helvetica", 20),
                        command=lambda: var.set(True))
-    guess_btn.grid(row=13, columnspan=2)
+    guess_btn.grid(row=1, columnspan=2)
+
+    # Creating the reset button
+    reset_btn = Button(btn_frame, text="Reset geme", font=("Helvetica", 20),
+                       command=lambda: reset(input_box))
+    reset_btn.grid(row=2, column=0)
+
+    # Creating exit button
+    exit_btn = Button(btn_frame, text="Exit", font=("Helvetica", 20),
+                      command=root.destroy)
+    exit_btn.grid(row=2, column=1)
 
     # Colors list
     colors = (
@@ -207,6 +225,10 @@ if __name__ == '__main__':
     results_frame = Frame(root, highlightbackground="black",
                           highlightthickness=2)
     results_frame.grid(row=2, column=1)
+
+    # Creating the buttons frame
+    btn_frame = Frame(root)
+    btn_frame.grid(row=3, columnspan=2)
 
     # Starting actual game
     start()
