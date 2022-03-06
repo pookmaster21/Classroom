@@ -3,7 +3,7 @@ author: Lavi Jacob Landa
 date: 3/1/2022
 explain: A simple Bulls and Cows game!
 """
-from tkinter import Frame, Tk, messagebox, Entry, Label, Button, BooleanVar
+from tkinter import Frame, Tk, Toplevel, messagebox, Entry, Label, Button, BooleanVar
 import random
 
 
@@ -68,10 +68,105 @@ def reset(entry: Entry):
     entry.delete(0, 'end')
 
 
+def game_rules():
+    """
+    A game rules function
+    """
+    # Creating the window to display the rules
+    rules_win = Toplevel(root)
+    rules_win.grab_set()
+
+    # Creating the Game Play label
+    game_play_title_lbl = Label(rules_win, text="Game Play", font=("Helvetica", 24))
+    game_play_title_lbl.grid()
+
+    # Creaing the game play rules label
+    rules_lbl = Label(rules_win,
+                      text="The code can be made up of any combination of t" +
+                           "he colored pegs. You may not use two or more pe" +
+                           "gs of the same color.\nOnce the code is set, th" +
+                           "e player(You!) can begin guessing, trying to du" +
+                           "plicate the exact colors and positions of the h" +
+                           "idden Code pegs.\nEach guess is made by placing" +
+                           " a row of Code pegs on the unit. Each row of pe" +
+                           "gs should be left in position throughout the ga" +
+                           "me.\nAfter every guess, the computer will infor" +
+                           "m the player of their progress using the square" +
+                           "s under the results title.\nA black square mean" +
+                           "s that there is a color in the right place, a w" +
+                           "hite square means that there is a color not in " +
+                           "the right place.",
+                      font=("Helvetica", 18))
+    rules_lbl.grid()
+
+    # Creating the "End of Game" title label
+    end_of_game_title_lbl = Label(rules_win, text="End of the Game", font=("Helvetica", 24))
+    end_of_game_title_lbl.grid()
+
+    # Creating thr end of game rules label
+    end_of_game_rules_lbl = Label(rules_win,
+                                  text="When there are 4 colors that are in" +
+                                       " the right place, the player wins." +
+                                       "\nIf after the 10th round the playe" +
+                                       "r didn't guess correctly, the playe" +
+                                       "r lost and the game finishes.",
+                                  font=("Helvetica", 18))
+    end_of_game_rules_lbl.grid()
+
+
+def stop_game(game_window: Toplevel, input_box: Entry):
+    """
+    A function that stops the game.
+    """
+    # Empty the input box
+    input_box.delete(0, 'end')
+
+    # Kills the game
+    game_window.destroy()
+
+
+def main_menu():
+    """
+    A functhion that creats the starting main menu.
+    """
+    # Creating the "New Game" button
+    new_game_btn = Button(root, text="New Game", font=("Helvetica", 20),
+                          command=start)
+    new_game_btn.grid()
+
+    # Creating the "Rules" button
+    rules_btn = Button(root, text="Geme Rules", font=("Helvetica", 20),
+                       command=game_rules)
+    rules_btn.grid()
+
+
 def start() -> None:
     """
     A function that starts the game.
     """
+    # Creating the game window
+    game_window = Toplevel(root)
+    game_window.grab_set()
+
+    # Creating the code frame
+    code_frame = Frame(game_window, highlightbackground="black",
+                       highlightthickness=2)
+    code_frame.grid(row=0, column=0, columnspan=2)
+
+    # Creating the gusses frame
+    gusses_frame = Frame(game_window, highlightbackground="black",
+                         highlightthickness=2)
+    gusses_frame.grid(row=2, column=0)
+
+    # Creating the results frame
+    results_frame = Frame(game_window, highlightbackground="black",
+                          highlightthickness=2)
+    results_frame.grid(row=2, column=1)
+
+    # Creating the buttons frame
+    btn_frame = Frame(game_window)
+    btn_frame.grid(row=3, columnspan=2)
+
     # Creating the code labels
     code_labels = []
     for i in range(4):
@@ -81,11 +176,11 @@ def start() -> None:
         code_labels.append(code_label)
 
     # Adding a guesses label
-    guesses_lbl = Label(root, text="Guessed", font=("Helvetica", 12))
+    guesses_lbl = Label(game_window, text="Guessed", font=("Helvetica", 12))
     guesses_lbl.grid(row=1, column=0)
 
     # Adding a result label
-    result_lbl = Label(root, text="Result", font=("Helvetica", 12))
+    result_lbl = Label(game_window, text="Result", font=("Helvetica", 12))
     result_lbl.grid(row=1, column=1)
 
     # Creating the guesses labels
@@ -124,7 +219,7 @@ def start() -> None:
 
     # Creating exit button
     exit_btn = Button(btn_frame, text="Exit", font=("Helvetica", 20),
-                      command=root.destroy)
+                      command=lambda: stop_game(game_window, input_box))
     exit_btn.grid(row=2, column=1)
 
     # Colors list
@@ -153,11 +248,13 @@ def start() -> None:
         # Getting the player input
         entered = get_player_input(list(colors), input_box)
 
+        # Clear the input box
+        input_box.delete(0, 'end')
+
         # If the player entered invalid guess
         if not entered:
             i -= 1
             var = BooleanVar()
-            input_box.delete(0, 'end')
             continue
 
         # If the guess is valid checking how much blacks and how much whites
@@ -211,27 +308,8 @@ if __name__ == '__main__':
     # Giving the window a title
     root.title('Bulls and Cows')
 
-    # Creating the code frame
-    code_frame = Frame(root, highlightbackground="black",
-                       highlightthickness=2)
-    code_frame.grid(row=0, column=0, columnspan=2)
-
-    # Creating the gusses frame
-    gusses_frame = Frame(root, highlightbackground="black",
-                         highlightthickness=2)
-    gusses_frame.grid(row=2, column=0)
-
-    # Creating the results frame
-    results_frame = Frame(root, highlightbackground="black",
-                          highlightthickness=2)
-    results_frame.grid(row=2, column=1)
-
-    # Creating the buttons frame
-    btn_frame = Frame(root)
-    btn_frame.grid(row=3, columnspan=2)
-
     # Starting actual game
-    start()
+    main_menu()
 
     # Mainloop
     root.mainloop()
