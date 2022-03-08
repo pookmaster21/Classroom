@@ -5,6 +5,7 @@ explain: A simple Bulls and Cows game!
 """
 from tkinter import Frame, Tk, Toplevel, messagebox, Entry, Label, Button, BooleanVar
 import random
+import json
 
 
 def create_code(colors: list) -> list[str]:
@@ -60,15 +61,15 @@ def get_player_input(colors: list, input_box: Entry):
     return False
 
 
-def reset(entry: Entry):
+def reset(game_window: Toplevel) -> None:
     """
     A function that resets the game
     """
+    game_window.destroy()
     start()
-    entry.delete(0, 'end')
 
 
-def game_rules():
+def game_rules() -> None:
     """
     A game rules function
     """
@@ -114,7 +115,7 @@ def game_rules():
     end_of_game_rules_lbl.grid()
 
 
-def stop_game(game_window: Toplevel, input_box: Entry):
+def stop_game(game_window: Toplevel, input_box: Entry) -> None:
     """
     A function that stops the game.
     """
@@ -125,7 +126,46 @@ def stop_game(game_window: Toplevel, input_box: Entry):
     game_window.destroy()
 
 
-def main_menu():
+def get_from_file() -> list[dict]:
+    """
+    A function that gets the top ten people that won the game.
+    """
+    data = []
+    try:
+        with open('bulls_and_cows_tkinter.json', 'r') as file:
+            data = json.load(file)["TopTen"]
+    except FileNotFoundError:
+        with open('bulls_and_cows_tkinter.json', 'w') as file:
+            file.write(json.dumps({"TopTen" : []}, indent=1))
+    return data
+
+
+def top_ten() -> None:
+    """
+    A function that creats the top ten window.
+    """
+    top_ten_win = Toplevel(root)
+    top_ten_win.grab_set()
+    text = get_from_file()
+    print(text)
+    if text == []:
+        Label(top_ten_win, text="File is corrupted!", font=("Helvetica", 20)).grid()
+    else:
+        for row, i in enumerate(text):
+            number = Label(top_ten_win, highlightthickness=2,
+                            highlightbackground="black", fg="blue",
+                            font=("Helvetica", 16, "bold"),
+                            text=row+1)
+            number.grid(row=row, column=0)
+            for index, key in enumerate(i):
+                name = Label(top_ten_win, highlightthickness=2,
+                             highlightbackground="black", fg="blue",
+                             font=("Helvetica", 16, "bold"),
+                             text=i.get(key))
+                name.grid(row=row, column=index+1)
+
+
+def main_menu() -> None:
     """
     A functhion that creats the starting main menu.
     """
@@ -139,8 +179,13 @@ def main_menu():
                        command=game_rules)
     rules_btn.grid()
 
+    # Creating the "Top 10" button
+    top_ten_btn = Button(root, text="Top 10", font=("Helvetica", 20),
+                         command=top_ten)
+    top_ten_btn.grid()
 
-def start() -> None:
+
+def start(name: str = "Anonimus") -> None:
     """
     A function that starts the game.
     """
@@ -214,7 +259,7 @@ def start() -> None:
 
     # Creating the reset button
     reset_btn = Button(btn_frame, text="Reset geme", font=("Helvetica", 20),
-                       command=lambda: reset(input_box))
+                       command=lambda: reset(game_window))
     reset_btn.grid(row=2, column=0)
 
     # Creating exit button
@@ -291,14 +336,32 @@ def start() -> None:
             if code[i] == color[0]:
                 code_labels[i].config(bg=color)
 
+    name = "pookmaster21"
     # If won displays win message
     if winner:
+        status = "won"
         messagebox.showinfo("Congrats!", "YOU WIN!\nYou got it right in" +
                             f" {i+1} moves")
     # If didn't won displays lose message
     else:
+        status = "lost"
         messagebox.showinfo("Too bad for you!",
                             "You didn't win, try next time!")
+
+    text = {
+        "name": name,
+        "status": status,
+    }
+
+    with open('bulls_and_cows_tkinter.json', 'r+') as file:
+        data = json.load(file)
+        try:
+            data["TopTen"].pop(10)
+        except IndexError:
+            pass
+        data["TopTen"].insert(0, text)
+        file.seek(0)
+        json.dump(data, file)
 
 
 if __name__ == '__main__':
