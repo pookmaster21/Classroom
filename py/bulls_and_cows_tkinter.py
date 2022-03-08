@@ -3,7 +3,8 @@ author: Lavi Jacob Landa
 date: 3/1/2022
 explain: A simple Bulls and Cows game!
 """
-from tkinter import Frame, Tk, Toplevel, messagebox, Entry, Label, Button, BooleanVar
+from tkinter import Frame, Tk, Toplevel, messagebox, Entry,\
+                    Label, Button, BooleanVar
 import random
 import json
 
@@ -65,7 +66,11 @@ def reset(game_window: Toplevel) -> None:
     """
     A function that resets the game
     """
+
+    # Destroys the game window
     game_window.destroy()
+
+    # Starts the game again
     start()
 
 
@@ -73,12 +78,14 @@ def game_rules() -> None:
     """
     A game rules function
     """
+
     # Creating the window to display the rules
     rules_win = Toplevel(root)
     rules_win.grab_set()
 
     # Creating the Game Play label
-    game_play_title_lbl = Label(rules_win, text="Game Play", font=("Helvetica", 24))
+    game_play_title_lbl = Label(rules_win,
+                                text="Game Play", font=("Helvetica", 24))
     game_play_title_lbl.grid()
 
     # Creaing the game play rules label
@@ -101,7 +108,9 @@ def game_rules() -> None:
     rules_lbl.grid()
 
     # Creating the "End of Game" title label
-    end_of_game_title_lbl = Label(rules_win, text="End of the Game", font=("Helvetica", 24))
+    end_of_game_title_lbl = Label(rules_win,
+                                  text="End of the Game",
+                                  font=("Helvetica", 24))
     end_of_game_title_lbl.grid()
 
     # Creating thr end of game rules label
@@ -131,12 +140,18 @@ def get_from_file() -> list[dict]:
     A function that gets the top ten people that won the game.
     """
     data = []
+    # Trying to open the file and get the data out of it
     try:
-        with open('bulls_and_cows_tkinter.json', 'r') as file:
-            data = json.load(file)["TopTen"]
+        with open('bulls_and_cows_tkinter.json',
+                  'r', encoding="UTF-8") as file:
+            data = json.load(file)
+    # If fails creats a new file and adding the syntax
     except FileNotFoundError:
-        with open('bulls_and_cows_tkinter.json', 'w') as file:
-            file.write(json.dumps({"TopTen" : []}, indent=1))
+        with open('bulls_and_cows_tkinter.json',
+                  'w', encoding="UTF-8") as file:
+            file.write(json.dumps({"TopTen": []}, indent=1))
+
+    # returning the data if it exists, if not returning a blank list
     return data
 
 
@@ -144,24 +159,40 @@ def top_ten() -> None:
     """
     A function that creats the top ten window.
     """
+
+    # Creating the top ten window
     top_ten_win = Toplevel(root)
+
+    # Making it the only usable window in the program
     top_ten_win.grab_set()
+
+    # Geting the data from the file
     text = get_from_file()
-    print(text)
-    if text == []:
-        Label(top_ten_win, text="File is corrupted!", font=("Helvetica", 20)).grid()
+
+    # If data is blank(doesn't exist)
+    if text["TopTen"] == []:
+        Label(top_ten_win, text="File is corrupted!",
+              font=("Helvetica", 20)).grid()
+    # Else(exists)
     else:
-        for row, i in enumerate(text):
+        for row, i in enumerate(text["TopTen"]):
+            # The row number
             number = Label(top_ten_win, highlightthickness=2,
-                            highlightbackground="black", fg="blue",
-                            font=("Helvetica", 16, "bold"),
-                            text=row+1)
+                           highlightbackground="black", fg="blue",
+                           font=("Helvetica", 16, "bold"),
+                           text=row+1)
             number.grid(row=row, column=0)
+
+            # The data
             for index, key in enumerate(i):
                 name = Label(top_ten_win, highlightthickness=2,
                              highlightbackground="black", fg="blue",
                              font=("Helvetica", 16, "bold"),
                              text=i.get(key))
+
+                # If it's win/lose make the width of the label 4
+                if index == 1:
+                    name.config(width=4)
                 name.grid(row=row, column=index+1)
 
 
@@ -189,9 +220,41 @@ def start(name: str = "Anonimus") -> None:
     """
     A function that starts the game.
     """
+
     # Creating the game window
     game_window = Toplevel(root)
+
+    # Making it the only usable window in the program
     game_window.grab_set()
+
+    # If player is Anonimus(no name) asking if the player wants a name
+    if name == "Anonimus":
+        var = BooleanVar()
+
+        # The instractions label
+        lbl = Label(game_window, text="Enter your name: ",
+                    font=("Helvetica", 20))
+        lbl.grid()
+
+        # The name field
+        name_input = Entry(game_window, font=("Helvetica", 20))
+        name_input.grid()
+
+        # Making a confirm button
+        confirm_btn = Button(game_window, text="Next", font=("Helvetica", 20),
+                             command=lambda: var.set(True))
+        confirm_btn.grid()
+
+        # Waiting for the confirm button to be pressed
+        confirm_btn.wait_variable(var)
+
+        # getting the input from the field
+        name = name_input.get()
+
+        # Destroying everything
+        lbl.destroy()
+        name_input.destroy()
+        confirm_btn.destroy()
 
     # Creating the code frame
     code_frame = Frame(game_window, highlightbackground="black",
@@ -281,12 +344,12 @@ def start(name: str = "Anonimus") -> None:
     code = create_code(list(colors))
 
     # Reseting the variables
-    place, color = 0, 0
+    place, color, i = 0, 0, 0
     winner, var = False, BooleanVar()
     entered = ""
 
     # Starting the game loop
-    for i in range(10):
+    while i < 10:
         # Waiting for the player to press the guess confirm button
         guess_btn.wait_variable(var)
 
@@ -298,7 +361,6 @@ def start(name: str = "Anonimus") -> None:
 
         # If the player entered invalid guess
         if not entered:
-            i -= 1
             var = BooleanVar()
             continue
 
@@ -329,6 +391,7 @@ def start(name: str = "Anonimus") -> None:
             break
         # If didn't win reseting veriables
         place, color = 0, 0
+        i += 1
 
     # Showing the player the right code
     for i in range(4):
@@ -336,7 +399,6 @@ def start(name: str = "Anonimus") -> None:
             if code[i] == color[0]:
                 code_labels[i].config(bg=color)
 
-    name = "pookmaster21"
     # If won displays win message
     if winner:
         status = "won"
@@ -348,19 +410,19 @@ def start(name: str = "Anonimus") -> None:
         messagebox.showinfo("Too bad for you!",
                             "You didn't win, try next time!")
 
-    text = {
-        "name": name,
-        "status": status,
-    }
+    # Trying to get the data from the file
+    data = get_from_file()
+    try:
+        # Popping the last(10th) element from the list(if exists)
+        data["TopTen"].pop(10)
+    except IndexError:
+        pass
 
-    with open('bulls_and_cows_tkinter.json', 'r+') as file:
-        data = json.load(file)
-        try:
-            data["TopTen"].pop(10)
-        except IndexError:
-            pass
-        data["TopTen"].insert(0, text)
-        file.seek(0)
+    # Inserting the new value to the data
+    data["TopTen"].insert(0, {"name": name, "status": status, "moves": i})
+
+    # Adding the data to the file
+    with open("bulls_and_cows_tkinter.json", "w", encoding="UTF-8") as file:
         json.dump(data, file)
 
 
