@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class TestExercise {
@@ -77,8 +76,7 @@ public class TestExercise {
             System.out.print(ex5A(arr, reader.nextInt()));
         }
     }
-    public static int[][] ex6() {
-        int[][] flag = new int[100][100];
+    public static int[][] ex6(int[][] flag) {
         for(int i=0;i<flag.length;i++) {
             for (int j=0;j<flag.length;j++) {
                 if(i==0 || j==0 || i==flag.length-1 || j==flag.length-1) {
@@ -96,10 +94,42 @@ public class TestExercise {
         while (true) {
             System.out.print("Enter which exercise you want to check: ");
             int exercise = reader.nextInt();
+            String[] str_arr;
+            int[] int_arr;
+            int[][] int_matrix;
             switch (exercise) {
                 case 1:
+                case 2:
                     System.out.println("Enter a string: ");
                     ex1(reader.nextLine());
+                    break;
+                case 3:
+                    System.out.print("Enter how much strings are going to be at the array: ");
+                    str_arr = new String[reader.nextInt()];
+                    for(int i=0;i<str_arr.length;i++) {
+                        System.out.print("Enter a string");
+                        str_arr[i] = reader.next();
+                    }
+                    System.out.print("Enter a number: ");
+                    Exact(str_arr, reader.nextInt());
+                    break;
+                case 4:
+                    System.out.print("Enter how much numbers are going to be at the array: ");
+                    int_arr = new int[reader.nextInt()];
+                    for (int i=0;i<int_arr.length;i++) {
+                        System.out.print("Enter an int: ");
+                        int_arr[i] = reader.nextInt();
+                    }
+                    ex4(int_arr);
+                    break;
+                case 5:
+                    ex5B();
+                    break;
+                case 6:
+                    System.out.print("Enter how much numbers are going to be at the array: ");
+                    int input = reader.nextInt();
+                    int_matrix = new int[input][input];
+                    ex6(int_matrix);
                     break;
                 default:
                     System.out.println("Invalid input");;
