@@ -62,21 +62,24 @@ def get_player_input(colors: list, input_box: Entry):
     return False
 
 
-def reset(game_window: Toplevel) -> None:
+def reset() -> None:
     """
-    A function that resets the game
+    A function that resets the game.
     """
 
-    # Destroys the game window
-    game_window.destroy()
+    # Creating the game window
+    game_window = Toplevel(root)
 
-    # Starts the game again
-    start()
+    # Making it the only usable window in the program
+    game_window.grab_set()
+
+    # Starting the game again
+    start(game_window)
 
 
 def game_rules() -> None:
     """
-    A game rules function
+    A game rules function.
     """
 
     # Creating the window to display the rules
@@ -150,8 +153,12 @@ def get_from_file() -> list[dict]:
         with open('bulls_and_cows_tkinter.json',
                   'w', encoding="UTF-8") as file:
             file.write(json.dumps({"TopTen": []}, indent=1))
+        # Gets the data
+        with open('bulls_and_cows_tkinter.json',
+                  'r', encoding="UTF-8") as file:
+            data = json.load(file)
 
-    # returning the data if it exists, if not returning a blank list
+    # returning the data
     return data
 
 
@@ -202,11 +209,11 @@ def main_menu() -> None:
     """
     # Creating the "New Game" button
     new_game_btn = Button(root, text="New Game", font=("Helvetica", 20),
-                          command=start)
+                          command=reset)
     new_game_btn.grid()
 
     # Creating the "Rules" button
-    rules_btn = Button(root, text="Geme Rules", font=("Helvetica", 20),
+    rules_btn = Button(root, text="Game Rules", font=("Helvetica", 20),
                        command=game_rules)
     rules_btn.grid()
 
@@ -216,16 +223,31 @@ def main_menu() -> None:
     top_ten_btn.grid()
 
 
-def start(name: str = "Anonimus") -> None:
+def start(game_window: Toplevel, name: str = "Anonimus") -> None:
     """
     A function that starts the game.
     """
 
-    # Creating the game window
-    game_window = Toplevel(root)
+    # Label lists
+    code_labels, labels, results = [], [], []
 
-    # Making it the only usable window in the program
-    game_window.grab_set()
+    # Colors list
+    colors = (
+        "red",
+        "green",
+        "blue",
+        "yellow",
+        "orange",
+        "cyan"
+    )
+
+    # Creating the code
+    code = create_code(list(colors))
+
+    # Reseting the veriables
+    place, color = 0, 0
+    winner, var = False, BooleanVar()
+    entered = ""
 
     # If player is Anonimus(no name) asking if the player wants a name
     if name == "Anonimus":
@@ -276,7 +298,6 @@ def start(name: str = "Anonimus") -> None:
     btn_frame.grid(row=3, columnspan=2)
 
     # Creating the code labels
-    code_labels = []
     for i in range(4):
         code_label = Label(code_frame, bg="grey", text=" ",
                            font=("Helvetica", 20))
@@ -292,7 +313,6 @@ def start(name: str = "Anonimus") -> None:
     result_lbl.grid(row=1, column=1)
 
     # Creating the guesses labels
-    labels = []
     for row in range(10):
         labels.append([])
         for col in range(4):
@@ -301,7 +321,6 @@ def start(name: str = "Anonimus") -> None:
             labels[row].append(new_label)
 
     # Creating the results labels
-    results = []
     for row in range(10):
         results.append([])
         for col in range(4):
@@ -322,7 +341,7 @@ def start(name: str = "Anonimus") -> None:
 
     # Creating the reset button
     reset_btn = Button(btn_frame, text="Reset geme", font=("Helvetica", 20),
-                       command=lambda: reset(game_window))
+                       command=reset)
     reset_btn.grid(row=2, column=0)
 
     # Creating exit button
@@ -330,26 +349,11 @@ def start(name: str = "Anonimus") -> None:
                       command=lambda: stop_game(game_window, input_box))
     exit_btn.grid(row=2, column=1)
 
-    # Colors list
-    colors = (
-        "red",
-        "green",
-        "blue",
-        "yellow",
-        "orange",
-        "cyan"
-    )
-
-    # Creating the code
-    code = create_code(list(colors))
-
-    # Reseting the variables
-    place, color, i = 0, 0, 0
-    winner, var = False, BooleanVar()
-    entered = ""
+    # Reseting i
+    game_round = 0
 
     # Starting the game loop
-    while i < 10:
+    while game_round < 10:
         # Waiting for the player to press the guess confirm button
         guess_btn.wait_variable(var)
 
@@ -377,13 +381,13 @@ def start(name: str = "Anonimus") -> None:
             # Showing the labels
             for suspected_color in colors:
                 if entered[j] == suspected_color[0]:
-                    labels[i][j].config(bg=suspected_color)
+                    labels[game_round][j].config(bg=suspected_color)
             # Showing number of blacks
             for blacks in range(place):
-                results[i][blacks].config(bg="black")
+                results[game_round][blacks].config(bg="black")
             # Showing the number of whites
             for whites in range(color):
-                results[i][whites+place].config(bg="white")
+                results[game_round][whites+place].config(bg="white")
 
         # If 4 colors are in the right place ending the game
         if place == 4:
@@ -391,7 +395,7 @@ def start(name: str = "Anonimus") -> None:
             break
         # If didn't win reseting veriables
         place, color = 0, 0
-        i += 1
+        game_round += 1
 
     # Showing the player the right code
     for i in range(4):
@@ -403,7 +407,7 @@ def start(name: str = "Anonimus") -> None:
     if winner:
         status = "won"
         messagebox.showinfo("Congrats!", "YOU WIN!\nYou got it right in" +
-                            f" {i+1} moves")
+                            f" {game_round+1} moves")
     # If didn't won displays lose message
     else:
         status = "lost"
@@ -419,7 +423,11 @@ def start(name: str = "Anonimus") -> None:
         pass
 
     # Inserting the new value to the data
-    data["TopTen"].insert(0, {"name": name, "status": status, "moves": i})
+    data["TopTen"].insert(0, {
+        "name": name,
+        "status": status,
+        "moves": game_round
+    })
 
     # Adding the data to the file
     with open("bulls_and_cows_tkinter.json", "w", encoding="UTF-8") as file:
