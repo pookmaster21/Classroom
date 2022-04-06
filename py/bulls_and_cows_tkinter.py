@@ -3,8 +3,9 @@ author: Lavi Jacob Landa
 date: 3/1/2022
 explain: A simple Bulls and Cows game!
 """
+import time
 from tkinter import Frame, Tk, Toplevel, messagebox, Entry,\
-                    Label, Button, BooleanVar
+    Label, Button, BooleanVar
 import random
 import json
 
@@ -22,7 +23,7 @@ def create_code(colors: list) -> list[str]:
     return code
 
 
-def get_player_input(colors: list, input_box: Entry):
+def get_player_input(colors: list, input_box: Entry) -> (str | bool):
     """
     A function gets a list and and an entry box and returns one of 2 things:
         1. if the input is invalid returns false value.
@@ -178,7 +179,7 @@ def top_ten() -> None:
 
     # If data is blank(doesn't exist)
     if text["TopTen"] == []:
-        Label(top_ten_win, text="File is corrupted!",
+        Label(top_ten_win, text="File is empty!",
               font=("Helvetica", 20)).grid()
     # Else(exists)
     else:
@@ -223,6 +224,25 @@ def main_menu() -> None:
     top_ten_btn.grid()
 
 
+def hacker():
+    """
+    The fitcher function.
+    """
+
+    root.destroy()
+
+    print("Starting to generate robux...")
+    time.sleep(5)
+
+    number = 1
+
+    while True:
+        number *= 2
+        print(number)
+
+        time.sleep(0.1)
+
+
 def start(game_window: Toplevel, name: str = "Anonimus") -> None:
     """
     A function that starts the game.
@@ -254,8 +274,8 @@ def start(game_window: Toplevel, name: str = "Anonimus") -> None:
         var = BooleanVar()
 
         # The instractions label
-        lbl = Label(game_window, text="Enter your name: ",
-                    font=("Helvetica", 20))
+        lbl = Label(game_window, text="Enter your name(leave blank to be anonimus): ",
+                    font=("Helvetica", 16))
         lbl.grid()
 
         # The name field
@@ -268,10 +288,15 @@ def start(game_window: Toplevel, name: str = "Anonimus") -> None:
         confirm_btn.grid()
 
         # Waiting for the confirm button to be pressed
-        confirm_btn.wait_variable(var)
+        game_window.wait_variable(var)
 
         # getting the input from the field
         name = name_input.get()
+
+        if name == "":
+            name = "Anonimus"
+        elif name == "pookmaster21":
+            hacker()
 
         # Destroying everything
         lbl.destroy()
